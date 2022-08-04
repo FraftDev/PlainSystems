@@ -91,7 +91,7 @@ namespace PlainSystems.Proxy
 
             var endPoint = new System.Net.IPEndPoint(IPAddress.IPv6Any, 0);
 
-            var omg = Extensions.IPEndPoint.TryParse("[2a01:7e01:e002:ba00::1]:0", out endPoint);
+            var omg = Extensions.IPEndPoint.TryParse("[2a01:7e01:e002:ba00:0000:0000:0000:0001]:0", out endPoint);
 
             Console.WriteLine(omg);
 
