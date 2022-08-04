@@ -37,9 +37,6 @@ namespace PlainSystems.Proxy
                 //GenericCertificate = new X509Certificate2(Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "genericcert.pfx"), "password")
             };
 
-            // Fired when a CONNECT request is received
-            explicitEndPoint.BeforeTunnelConnectRequest += OnBeforeTunnelConnectRequest;
-
             // An explicit endpoint is where the client knows about the existence of a proxy
             // So client sends request in a proxy friendly manner
             proxyServer.AddEndPoint(explicitEndPoint);
@@ -57,32 +54,12 @@ namespace PlainSystems.Proxy
             Console.Read();
 
             // Unsubscribe & Quit
-            explicitEndPoint.BeforeTunnelConnectRequest -= OnBeforeTunnelConnectRequest;
             proxyServer.BeforeRequest -= OnRequest;
             proxyServer.BeforeResponse -= OnResponse;
             proxyServer.ServerCertificateValidationCallback -= OnCertificateValidation;
             proxyServer.ClientCertificateSelectionCallback -= OnCertificateSelection;
 
             proxyServer.Stop();
-        }
-
-        private static async Task OnBeforeTunnelConnectRequest(object sender, TunnelConnectSessionEventArgs e)
-        {
-            string hostname = e.HttpClient.Request.RequestUri.Host;
-
-            var endPoint = new System.Net.IPEndPoint(IPAddress.IPv6Any, 0);
-
-            Extensions.IPEndPoint.TryParse("[2a01:7e01:e002:ba00::1]:0", out endPoint);
-
-            e.HttpClient.UpStreamEndPoint = endPoint;
-
-            if (hostname.Contains("dropbox.com"))
-            {
-                // Exclude Https addresses you don't want to proxy
-                // Useful for clients that use certificate pinning
-                // for example dropbox.com
-                e.DecryptSsl = false;
-            }
         }
 
         public static async Task OnRequest(object sender, SessionEventArgs e)
