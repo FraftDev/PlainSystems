@@ -52,9 +52,6 @@ namespace PlainSystems.Proxy
                 Console.WriteLine("Listening on '{0}' endpoint at Ip {1} and port: {2} ",
                     endPoint.GetType().Name, endPoint.IpAddress, endPoint.Port);
 
-            // Only explicit proxies can be set as system proxy!
-            proxyServer.SetAsSystemHttpProxy(explicitEndPoint);
-            proxyServer.SetAsSystemHttpsProxy(explicitEndPoint);
 
             // wait here (You can use something else as a wait function, I am using this as a demo)
             Console.Read();
@@ -91,6 +88,14 @@ namespace PlainSystems.Proxy
         public static async Task OnRequest(object sender, SessionEventArgs e)
         {
             Console.WriteLine(e.HttpClient.Request.Url);
+
+            var endPoint = new System.Net.IPEndPoint(IPAddress.IPv6Any, 0);
+
+            var omg = Extensions.IPEndPoint.TryParse("[2a01:7e01:e002:ba00::1]:0", out endPoint);
+
+            Console.WriteLine(omg);
+
+            e.HttpClient.UpStreamEndPoint = endPoint;
 
             // read request headers
             var requestHeaders = e.HttpClient.Request.Headers;
