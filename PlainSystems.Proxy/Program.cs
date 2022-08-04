@@ -29,7 +29,7 @@ namespace PlainSystems.Proxy
             proxyServer.ClientCertificateSelectionCallback += OnCertificateSelection;
 
 
-            var explicitEndPoint = new ExplicitProxyEndPoint(IPAddress.Parse("172.104.203.136"), 8000, true)
+            var explicitEndPoint = new ExplicitProxyEndPoint(IPAddress.Parse("172.104.203.136"), 8000, false)
             {
                 // Use self-issued generic certificate on all https requests
                 // Optimizes performance by not creating a certificate for each https-enabled domain
